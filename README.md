@@ -10,4 +10,8 @@ inside this GitHub account.
 Feel yourself free to take a look, I just wish that when copying my
 code give me a reference.
 
+By the way, if you wanna talk to me, currently I'm able to speak
+Portuguese, English, (a bit of) Japanese and I also can understand
+Spanish.
+
 And I hope that a write more there... :)
