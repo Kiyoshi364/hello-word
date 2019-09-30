@@ -1,0 +1,18 @@
+lif mau.txt
+lab samplealph.alp
+stk 3 4 5
+ptk
+cce
+psi
+pso
+
+upb
+ice
+ptk
+
+cce
+psi
+pso
+
+exit
+exit
