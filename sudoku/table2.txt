@@ -1,0 +1,20 @@
+﻿#ifndef TABLE
+#define TABLE
+#define CLS ""
+#define UP_LINE "\n\t\tT-----------------~-----------------~-----------------T\n"
+#define MID_LIN "\n\t\t|\t\t  |\t\t    |\t\t      |\n"
+#define MID_LINE "\t\t<-----------------+-----------------+----------------->\n"
+#define DOWN_LINE "\t\tL-----------------~-----------------~-----------------J\n"
+#define RIGHT_COL "\t     %d\t| "
+#define STD_COL " | "
+#define STD_HILI 0
+#define HFL_TOKEN '{'
+#define HFR_TOKEN '}'
+#define HUL_TOKEN '/'
+#define HUR_TOKEN '\\'
+#define UFL_TOKEN '['
+#define UFR_TOKEN ']'
+#define UUL_TOKEN ' '
+#define UUR_TOKEN ' '
+#define EMPTY ' '
+#endif

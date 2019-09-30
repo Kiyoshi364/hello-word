@@ -1,0 +1,10 @@
+﻿#ifndef TEXTS
+#define TEXTS
+#define OPENFILEERROR_MSG "Nao foi possivel abrir o arquivo\n"
+#define LOADINGERROR_MSG "Loading error i=%d temp=%d\n"
+#define CHOOSE_DIF_MSG "Escolha a dificuldade (1-Facil|2-Medio|3-Dificil): "
+#define INPUT_MSG "Entre com x, y e o numero: "
+#define FIXED_POS_MSG "Essa posicao eh fixa!\nTente novamente\n"
+#define SAME_POS_MSG "Posicao invalida!\nNumero igual em posicao (%d, %d).\n"
+#define WIN_MSG "Parabens! Voce Completou o Sudoku!\n"
+#endif

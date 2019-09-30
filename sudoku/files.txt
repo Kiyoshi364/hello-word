@@ -1,0 +1,6 @@
+﻿#ifndef FILES
+#define FILES
+#define FEASY "easy.sdk"
+#define FNORMAL "normal.sdk"
+#define FHARD "hard.sdk"
+#endif
