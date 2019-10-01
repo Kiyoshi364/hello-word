@@ -14,4 +14,4 @@ By the way, if you wanna talk to me, currently I'm able to speak
 Portuguese, English, (a bit of) Japanese and I also can understand
 Spanish.
 
-And I hope that a write more there... :)
+And I hope that I'll write more stuff here... :)
