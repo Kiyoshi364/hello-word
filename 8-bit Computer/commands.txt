@@ -1,0 +1,40 @@
+LDAV - Load Value on register A
+LDBV - Load Value on register B
+LDCV - Load Value on register C
+LDMV - Load Value on RAM in address register C
+
+LDAA - Load value in Address on register A
+LDBA - Load value in Address on register B
+LDCA - Load value in Address on register C
+LDMA - Load value in Address on RAM in address register C
+
+ADDV - Add register A with Value, writes result on register C
+ADDM - Add register A with value in address register C, writes result on register C
+SUBV - Subtracts register A with Value, writes result on register C
+SUBM - Subtracts register A with value in address register C, writes result on register C
+
+INCA - Increments register A
+INCB - Increments register B
+INCC - Increments register C
+
+DECA - Decrements register A
+DECB - Decrements register B
+DECC - Decrements register C
+
+PSHA - Pushes resgister A's value onto the stack
+PSHB - Pushes resgister B's value onto the stack
+PSHC - Pushes resgister C's value onto the stack
+PUSH - Pushes value in Address onto the stack
+
+POPA - Pops value and writes result on register A
+POPB - Pops value and writes result on register B
+POPC - Pops value and writes result on register C
+POPV - Pops Value onto the stack, writes result on register C
+
+JUMP - Sets the Program Pointer to Address
+JMPC - Sets the Program Pointer to Address if Carry Flag is set
+JMPZ - Sets the Program Pointer to Address if Zero Flag is set
+
+OUTN - Prints value on register C as a Number
+OUTN - Prints value on register C as a Character
+HALT - Stops the computer
