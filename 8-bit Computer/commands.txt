@@ -1,40 +1,56 @@
-LDAV - Load Value on register A
-LDBV - Load Value on register B
-LDCV - Load Value on register C
-LDMV - Load Value on RAM in address register C
+0000 0XXX LDAV - Load Value on register A
+0000 1XXX LDBV - Load Value on register B
+0001 0XXX LDCV - Load Value on register C
+0001 1XXX LDMV - Load Value on RAM in address register C
 
-LDAA - Load value in Address on register A
-LDBA - Load value in Address on register B
-LDCA - Load value in Address on register C
-LDMA - Load value in Address on RAM in address register C
+0010 0XXX LDAA - Load value in Address on register A
+0010 1XXX LDBA - Load value in Address on register B
+0011 0XXX LDCA - Load value in Address on register C
+0011 1XXX LDMA - Load value in Address on RAM in address register C
 
-ADDV - Add register A with Value, writes result on register C
-ADDM - Add register A with value in address register C, writes result on register C
-SUBV - Subtracts register A with Value, writes result on register C
-SUBM - Subtracts register A with value in address register C, writes result on register C
+0100 0XXX ADDV - Add register A with Value, writes result on register C
+0100 1XXX ADDM - Add register A with value in address register C, writes result on register C
+0101 0XXX SUBV - Subtracts register A with Value, writes result on register C
+0101 1XXX SUBM - Subtracts register A with value in address register C, writes result on register C
 
-INCA - Increments register A
-INCB - Increments register B
-INCC - Increments register C
+0110 0000 INCA - Increments register A
+0110 1000 INCB - Increments register B
+0111 0000 INCC - Increments register C
+0111 1000 JUMP - Sets the Program Pointer to Address
 
-DECA - Decrements register A
-DECB - Decrements register B
-DECC - Decrements register C
+1000 0000 DECA - Decrements register A
+1000 1000 DECB - Decrements register B
+1001 0000 DECC - Decrements register C
+1001 1000 JMPC - Sets the Program Pointer to Address if Carry Flag is set
 
-PSHA - Pushes resgister A's value onto the stack
-PSHB - Pushes resgister B's value onto the stack
-PSHC - Pushes resgister C's value onto the stack
-PUSH - Pushes value in Address onto the stack
+1010 0XXX OUTN - Prints value on register C as a Number
+1010 1XXX OUTN - Prints value on register C as a Character
+1011 0000 HALT - Stops the computer
+1011 1000 JMPZ - Sets the Program Pointer to Address if Zero Flag is set
 
-POPA - Pops value and writes result on register A
-POPB - Pops value and writes result on register B
-POPC - Pops value and writes result on register C
-POPV - Pops Value onto the stack, writes result on register C
+1100 0XXX PSHA - Pushes resgister A's value onto the stack
+1100 1XXX PSHB - Pushes resgister B's value onto the stack
+1101 0XXX PSHC - Pushes resgister C's value onto the stack
+1101 1XXX PUSH - Pushes value in Address onto the stack
 
-JUMP - Sets the Program Pointer to Address
-JMPC - Sets the Program Pointer to Address if Carry Flag is set
-JMPZ - Sets the Program Pointer to Address if Zero Flag is set
+1110 0XXX POPA - Pops value and writes result on register A
+1110 1XXX POPB - Pops value and writes result on register B
+1111 0XXX POPC - Pops value and writes result on register C
+1111 1XXX POPV - Pops Value onto the stack, writes result on register C
 
-OUTN - Prints value on register C as a Number
-OUTN - Prints value on register C as a Character
-HALT - Stops the computer
+Obs: 
+XXX means that a number from 000 to 110 will be the argument for
+the operation. If XXX is 111, then next byte will be the argument.
+
+0110 0001 - 0110 0111: Unused (INCA)
+0110 1001 - 0110 1111: Unused (INCB)
+0111 0001 - 0111 0111: Unused (INCC)
+0111 1001 - 0111 1111: Unused (JUMP)
+
+1000 0001 - 1000 0111: Unused (DECA)
+1000 1001 - 1000 1111: Unused (DECB)
+1001 0001 - 1001 0111: Unused (DECC)
+1001 1001 - 1001 1111: Unused (JMPC)
+
+1011 0001 - 1011 0111: Unused (HALT)
+1011 1001 - 1011 1111: Unused (JMPZ)
