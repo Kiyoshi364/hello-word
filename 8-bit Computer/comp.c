@@ -66,6 +66,7 @@ void cpu(byte rw);
 void ram(byte rw);
 void progCounter(byte rw);
 void alu(byte rw);
+void stack(byte rw);
 void addOne(byte rw);
 
 void all(byte rw) {
@@ -73,6 +74,7 @@ void all(byte rw) {
 	progCounter(rw);
 	alu(rw);
 	cpu(rw);
+	stack(rw);
 	addOne(rw);
 }
 
@@ -215,6 +217,18 @@ void alu(byte rw) {
 
 			flags = overflow | zero<<1;
 			bus = s;
+		}
+	}
+}
+
+void stack(byte rw) {
+	static byte stackptr = 0xFF;
+	if (myclock) {
+		if (rw && add&INC_STACK) {
+			stackptr--;
+		}
+		if (rw && add&DEC_STACK) {
+			stackptr++;
 		}
 	}
 }
