@@ -8,10 +8,10 @@
 0011 0XXX LDCA - Load value in Address on register C
 0011 1XXX LDMA - Load value in Address on RAM in address register C
 
-0100 0XXX ADDV - Add register A with Value, writes result on register C
-0100 1XXX ADDM - Add register A with value in address register C, writes result on register C
-0101 0XXX SUBV - Subtracts register A with Value, writes result on register C
-0101 1XXX SUBM - Subtracts register A with value in address register C, writes result on register C
+0100 0XXX ADDV - Add register A with Value, writes result on register B
+0100 1XXX ADDM - Add register A with value in address register C, writes result on register B
+0101 0XXX SUBV - Subtracts register A with Value, writes result on register B
+0101 1XXX SUBM - Subtracts register A with value in address register C, writes result on register B
 
 0110 0000 INCA - Increments register A
 0110 1000 INCB - Increments register B
@@ -23,8 +23,8 @@
 1001 0000 DECC - Decrements register C
 1001 1000 JMPC - Sets the Program Pointer to Address if Carry Flag is set
 
-1010 0XXX OUTN - Prints value on register C as a Number
-1010 1XXX OUTN - Prints value on register C as a Character
+1010 0XXX OUTN - Prints value on register A as a Number
+1010 1XXX OUTC - Prints value on register A as a Character
 1011 0000 HALT - Stops the computer
 1011 1000 JMPZ - Sets the Program Pointer to Address if Zero Flag is set
 
@@ -36,7 +36,7 @@
 1110 0XXX POPA - Pops value and writes result on register A
 1110 1XXX POPB - Pops value and writes result on register B
 1111 0XXX POPC - Pops value and writes result on register C
-1111 1XXX POPV - Pops Value onto the stack, writes result on register C
+1111 1XXX POPM - Pops value and writes result on register C
 
 Obs: 
 XXX means that a number from 000 to 110 will be the argument for
