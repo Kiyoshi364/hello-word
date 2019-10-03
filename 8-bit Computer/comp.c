@@ -27,15 +27,16 @@ typedef unsigned char byte;
 #define READ_INSTRUCT 		0x00020000
 #define WRITE_ARGS 		0x00040000
 #define READ_ARGS 		0x00080000
-#define INC_BUS 		0x00100000
-#define DEC_BUS 		0x00200000
-//#define ADD 		0x00800000
+#define READ_SMALLARGS 		0x00100000
+#define RESET_STEP		0x00200000
+#define INC_BUS 		0x00400000
+#define DEC_BUS 		0x00800000
 
 #define INC_STACK 		0x01000000
 #define DEC_STACK 		0x02000000
+/* unused
 #define ADD 		0x04000000
 #define ADD 		0x08000000
-/* unused
 #define ADD 		0x10000000
 #define ADD 		0x20000000
 #define ADD 		0x40000000
@@ -118,7 +119,7 @@ byte i = 128, j = 128;
 }
 
 void cpu(byte rw) {
-	static byte instruction = 0, args = 0;
+	static byte instruction = 0, args = 0, step = 0;
 	if (myclock) {
 		if (rw && add&WRITE_INSTRUCT) {
 			instruction = bus;
@@ -132,8 +133,13 @@ void cpu(byte rw) {
 		if (!rw && add&READ_ARGS) {
 			bus = args;
 		}
+		if (!rw && add&READ_SMALLARGS) {
+			bus = instruction&0x07; // 0000 0111
+		}
+		if (rw && add&RESET_STEP) {
+			step = 0;
+		}
 	} else {
-		static byte step = 0;
 		add = instructionList(instruction, step++);
 	}
 }
