@@ -203,19 +203,20 @@ void alu(byte rw) {
 		if (!rw && add&READ_SUM) {
 			rbyte a = ra, b = (add&SUBTRACT_FLAG?~rb:rb),
 			      s = 0, c = (add&SUBTRACT_FLAG?1:0);
-			rbyte overflow = 0;
+			rbyte carry = 0;
 			do {
 				s = a ^ b ^ c;
 				c = a & b | a & c | b & c;
-				overflow |= c;
+				carry |= c;
 				a = s;
 				b = c<<1;
 				c = 0;
 			} while (b);
-			rbyte zero = !s;
-			overflow = (add&SUBTRACT_FLAG?!!(overflow&0x80):!!(overflow&0x80));
+			rbyte zero = (!s?ZERO:0);
+			carry = (carry&0x80?CARRY:0); // 0x80 is the most significant bit
 
-			flags = overflow | zero<<1;
+			flags &= ~(CARRY|ZERO);
+			flags |= carry | zero;
 			bus = s;
 		}
 	}
@@ -226,9 +227,17 @@ void stack(byte rw) {
 	if (myclock) {
 		if (rw && add&INC_STACK) {
 			stackptr--;
+
+			flags &= ~(OVERFLOW|UNDERFLOW);
+			flags |= (stackptr<0x0F?OVERFLOW:0);
 		}
 		if (rw && add&DEC_STACK) {
+			flags &= ~(OVERFLOW|UNDERFLOW);
+			rbyte underflow = stackptr>0x0F;
+
 			stackptr++;
+
+			flags |= (underflow && stackptr<0x0F?UNDERFLOW:0);
 		}
 	}
 }
