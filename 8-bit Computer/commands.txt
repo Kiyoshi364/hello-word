@@ -16,17 +16,17 @@
 0110 0000 INCA - Increments register A
 0110 1000 INCB - Increments register B
 0111 0000 INCC - Increments register C
-0111 1000 JUMP - Sets the Program Pointer to Address
+0111 1XXX JUMP - Sets the Program Pointer to Address
 
 1000 0000 DECA - Decrements register A
 1000 1000 DECB - Decrements register B
 1001 0000 DECC - Decrements register C
-1001 1000 JMPC - Sets the Program Pointer to Address if Carry Flag is set
+1001 1NZC JMPA - Sets the Program Pointer to Address if NZC in Aritmetic Flags is set
 
 1010 0XXX OUTN - Prints value on register A as a Number
 1010 1XXX OUTC - Prints value on register A as a Character
 1011 0000 HALT - Stops the computer
-1011 1000 JMPZ - Sets the Program Pointer to Address if Zero Flag is set
+1011 1SUO JMPS - Sets the Program Pointer to Address if SUO in Stack Flags is set
 
 1100 0XXX PSHA - Pushes resgister A's value onto the stack
 1100 1XXX PSHB - Pushes resgister B's value onto the stack
@@ -42,15 +42,20 @@ Obs:
 XXX means that a number from 000 to 110 will be the argument for
 the operation. If XXX is 111, then next byte will be the argument.
 
+NZC means the Aritmetic Flags: Negative, Zero, Carry.
+Ex1: 1001 1001 0000 0000 -> Jumps to 0000 0000 if the Carry flag is set
+Ex2: 1001 1011 0000 1100 -> Jumps to 0000 1100 if the Carry AND Zero flag are set
+
+SUO means the Stack Flags: Set-to-zero, Underflow, Overflow.
+Ex1: 1011 1001 0000 0000 -> Jumps to 0000 0000 if the Overflow flag is set
+Ex2: 1011 1011 0000 1100 -> Jumps to 0000 1100 if the Overflow AND Underflow flag are set
+
 0110 0001 - 0110 0111: Unused (INCA)
 0110 1001 - 0110 1111: Unused (INCB)
 0111 0001 - 0111 0111: Unused (INCC)
-0111 1001 - 0111 1111: Unused (JUMP)
 
 1000 0001 - 1000 0111: Unused (DECA)
 1000 1001 - 1000 1111: Unused (DECB)
 1001 0001 - 1001 0111: Unused (DECC)
-1001 1001 - 1001 1111: Unused (JMPC)
 
 1011 0001 - 1011 0111: Unused (HALT)
-1011 1001 - 1011 1111: Unused (JMPZ)
