@@ -1,0 +1,77 @@
+~~[COMMAND]~~
+COM_ADDR STEP_CNT - CONTROL FLAGS
+
+~~ALL~~
+XXXX XXXX  0000 0000 - Read Prog Pointer | Write RAM Pointer
+XXXX XXXX  0000 0001 - Read RAM | Write Instruction Reg | Inc Prog Pointer
+~~[0]~~
+UUUU UUUU  0000 0010 - Read SmallArgs | Write Argument Reg
+UUUU UUUU  0000 0011 - NOP
+~~[1]~~
+UUUU UUUU  0000 0010 - Read Prog Pointer | Write RAM Pointer
+UUUU UUUU  0000 0011 - Read RAM | Write Argument Reg | Increment Prog Pointer
+
+~~[LDAV]~~
+0000 0XXX  0000 0100 - Read Argument Reg | Write Register A
+0000 0XXX  0000 0101 - END OP
+~~[LDBV]~~
+0000 1XXX  0000 0100 - Read Argument Reg | Write Register B
+0000 1XXX  0000 0101 - END OP
+~~[LDCV]~~
+0001 0XXX  0000 0100 - Read Argument Reg | Write Register C
+0001 0XXX  0000 0101 - END OP
+~~[LDMV]~~
+0001 1XXX  0000 0100 - Read Argument Reg | Write RAM
+0001 1XXX  0000 0101 - END OP
+
+~~[LDAA]~~
+0010 0XXX  0000 0100 - Read Argument Reg | Write RAM Pointer
+0010 0XXX  0000 0101 - Read RAM | Write Register A
+0010 0XXX  0000 0110 - END OP
+~~[LDBA]~~
+0010 1XXX  0000 0100 - Read Argument Reg | Write RAM Pointer
+0010 1XXX  0000 0101 - Read RAM | Write Register B
+0010 1XXX  0000 0110 - END OP
+~~[LDCA]~~
+0011 0XXX  0000 0100 - Read Argument Reg | Write RAM Pointer
+0011 0XXX  0000 0101 - Read RAM | Write Register C
+0011 0XXX  0000 0110 - END OP
+~~[LDMA]~~
+0011 1XXX  0000 0100 - Read Argument Reg | Write RAM Pointer
+0011 1XXX  0000 0101 - Read RAM | Write RAM
+0011 1XXX  0000 0110 - END OP
+
+~~[ADDV]~~
+0100 0XXX  0000 0100 - Read Argument Reg | Write Register B
+0100 0XXX  0000 0101 - Read Sum | Write Register B
+0100 0XXX  0000 0110 - END OP
+~~[ADDM]~~
+0100 1XXX  0000 0100 - Read Argument Reg | Write RAM Pointer
+0100 1XXX  0000 0101 - Read RAM | Write Register B
+0100 1XXX  0000 0101 - Read Sum | Write Register B
+0100 1XXX  0000 0110 - END OP
+~~[SUBV]~~
+0101 0XXX  0000 0100 - Read Argument Reg | Write Register B
+0101 0XXX  0000 0101 - Read Sum | Write Register B | Subtract_Flag
+0101 0XXX  0000 0110 - END OP
+~~[SUBM]~~
+0101 1XXX  0000 0100 - Read Argument Reg | Write RAM Pointer
+0101 1XXX  0000 0101 - Read RAM | Write Register B
+0101 1XXX  0000 0101 - Read Sum | Write Register B | Subtract_Flag
+0101 1XXX  0000 0110 - END OP
+
+~~[INCA]~~
+0110 0XXX  0000 0100 - Read Register A
+0110 0XXX  0000 0101 - Inc Bus | Write Register A
+0110 0XXX  0000 0110 - END OP
+~~[INCB]~~
+0110 1XXX  0000 0100 - Read Register B
+0110 1XXX  0000 0101 - Inc Bus | Write Register B
+0110 1XXX  0000 0110 - END OP
+~~[INCB]~~
+0111 0XXX  0000 0100 - Read Register C
+0111 0XXX  0000 0101 - Inc Bus | Write Register C
+0111 0XXX  0000 0110 - END OP
+~~[JUMP]~~
+0111 1XXX  0000 0100 - Read Argument Reg | Write Prog Pointer
+0111 1XXX  0000 0101 - END OP
