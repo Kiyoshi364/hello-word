@@ -73,5 +73,77 @@ UUUU UUUU  0000 0011 - Read RAM | Write Argument Reg | Increment Prog Pointer
 0111 0XXX  0000 0101 - Inc Bus | Write Register C
 0111 0XXX  0000 0110 - END OP
 ~~[JUMP]~~
-0111 1XXX  0000 0100 - Read Argument Reg | Write Prog Pointer
-0111 1XXX  0000 0101 - END OP
+0111 1XXX  0000 0100 - <ToDo>PREPARE FOR JUMP[ALWALS TRUE]</ToDo>
+0111 1XXX  0000 0101 - Read Argument Reg | Write Prog Pointer
+0111 1XXX  0000 0110 - END OP
+
+~~[DECA]~~
+1000 0XXX  0000 0100 - Read Register A
+1000 0XXX  0000 0101 - Dec Bus | Write Register A
+1000 0XXX  0000 0110 - END OP
+~~[DECB]~~
+1000 1XXX  0000 0100 - Read Register B
+1000 1XXX  0000 0101 - Dec Bus | Write Register B
+1000 1XXX  0000 0110 - END OP
+~~[DECB]~~
+1001 0XXX  0000 0100 - Read Register C
+1001 0XXX  0000 0101 - Dec Bus | Write Register C
+1001 0XXX  0000 0110 - END OP
+~~[JMPA]~~
+1001 1XXX  0000 0100 - <ToDo>PREPARE FOR JUMP</ToDo>
+1001 1XXX  0000 0101 - Read Argument Reg | Write Prog Pointer
+1001 1XXX  0000 0110 - END OP
+
+~~[OUTN]~~
+1010 0XXX  0000 0100 - Read Register A | Write Output Register
+1010 0XXX  0000 0101 - Output | Number Flag
+1010 0XXX  0000 0110 - END OP
+~~[OUTC]~~
+1010 1XXX  0000 0100 - Read Register A | Write Output Register
+1010 1XXX  0000 0101 - Output | ASCII Flag
+1010 1XXX  0000 0110 - END OP
+~~[HALT]~~
+1011 0XXX  0000 0100 - Halt Flag
+~~[JMPS]~~
+1011 1XXX  0000 0100 - <ToDo>PREPARE FOR JUMP</ToDo>
+1011 1XXX  0000 0101 - Read Argument Reg | Write Prog Pointer
+1011 1XXX  0000 0110 - END OP
+
+~~[PSHA]~~
+1100 0XXX  0000 0100 - Read Stack Pointer | Write RAM Pointer
+1100 0XXX  0000 0101 - Read Register A | Write RAM | Inc Stack Pointer
+1100 0XXX  0000 0110 - END OP
+~~[PSHB]~~
+1100 1XXX  0000 0100 - Read Stack Pointer | Write RAM Pointer
+1100 1XXX  0000 0101 - Read Register B | Write RAM | Inc Stack Pointer
+1100 1XXX  0000 0110 - END OP
+~~[PSHC]~~
+1101 0XXX  0000 0100 - Read Stack Pointer | Write RAM Pointer
+1101 0XXX  0000 0101 - Read Register C | Write RAM | Inc Stack Pointer
+1101 0XXX  0000 0110 - END OP
+~~[PUSH]~~
+1101 1XXX  0000 0100 - Read Register C | Write RAM Pointer
+1101 1XXX  0000 0101 - Read RAM | Write Argument Reg 
+1101 1XXX  0000 0110 - Read Stack Pointer | Write RAM Pointer
+1101 1XXX  0000 0111 - Read Argument Reg | Write RAM | Inc Stack Pointer
+1101 1XXX  0000 1000 - END OP
+
+~~[PSHA]~~
+1100 0XXX  0000 0100 - Read Stack Pointer | Write RAM Pointer
+1100 0XXX  0000 0101 - Read Register A | Write RAM | Inc Stack Pointer
+1100 0XXX  0000 0110 - END OP
+~~[PSHB]~~
+1100 1XXX  0000 0100 - Read Stack Pointer | Write RAM Pointer
+1100 1XXX  0000 0101 - Read Register B | Write RAM | Inc Stack Pointer
+1100 1XXX  0000 0110 - END OP
+~~[PSHC]~~
+1101 0XXX  0000 0100 - Read Stack Pointer | Write RAM Pointer
+1101 0XXX  0000 0101 - Read Register C | Write RAM | Inc Stack Pointer
+1101 0XXX  0000 0110 - END OP
+~~[PUSH]~~
+1101 1XXX  0000 0100 - Read Register C | Write RAM Pointer
+1101 1XXX  0000 0101 - Read RAM | Write Argument Reg 
+1101 1XXX  0000 0110 - Read Stack Pointer | Write RAM Pointer
+1101 1XXX  0000 0111 - Read Argument Reg | Write RAM | Inc Stack Pointer
+1101 1XXX  0000 1000 - END OP
+
