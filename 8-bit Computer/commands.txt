@@ -16,15 +16,15 @@
 0110 0000 INCA [0] - Increments register A
 0110 1000 INCB [0] - Increments register B
 0111 0000 INCC [0] - Increments register C
-0111 1XXX JUMP [M] - Sets the Program Pointer to Address
+0111 1000 JUMP [1] - Sets the Program Pointer to Address
 
 1000 0000 DECA [0] - Decrements register A
 1000 1000 DECB [0] - Decrements register B
 1001 0000 DECC [0] - Decrements register C
 1001 1NZC JMPA [1] - Sets the Program Pointer to Address if NZC in Aritmetic Flags is set
 
-1010 0XXX OUTN [M] - Prints value on register A as a Number
-1010 1XXX OUTC [M] - Prints value on register A as a Character
+1010 0000 OUTN [1] - Prints value on register A as a Number
+1010 1000 OUTC [1] - Prints value on register A as a Character
 1011 0000 HALT [0] - Stops the computer
 1011 1SUO JMPS [1] - Sets the Program Pointer to Address if SUO in Stack Flags is set
 
@@ -61,11 +61,14 @@ Undefined Instructions:
 0110 0001 - 0110 0111 (INCA)
 0110 1001 - 0110 1111 (INCB)
 0111 0001 - 0111 0111 (INCC)
+0111 1001 - 0111 1111 (JUMP)
 
 1000 0001 - 1000 0111 (DECA)
 1000 1001 - 1000 1111 (DECB)
 1001 0001 - 1001 0111 (DECC)
 
+1010 0001 - 1010 0111 (OUTN)
+1010 1001 - 1010 1111 (OUTC)
 1011 0001 - 1011 0111 (HALT)
 
 1100 0001 - 1100 0111 (PSHA)

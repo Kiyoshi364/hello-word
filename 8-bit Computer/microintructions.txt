@@ -4,12 +4,15 @@ COM_ADDR STEP_CNT - CONTROL FLAGS
 ~~ALL~~
 XXXX XXXX  0000 0000 - Read Prog Pointer | Write RAM Pointer
 XXXX XXXX  0000 0001 - Read RAM | Write Instruction Reg | Inc Prog Pointer
-~~[0]~~
+~~[M]~~
 UUUU UUUU  0000 0010 - Read SmallArgs | Write Argument Reg
+UUUU UUUU  0000 0011 - NOP
+~~[0]~~
+UUUU UUUU  0000 0010 - Inc Step
 UUUU UUUU  0000 0011 - NOP
 ~~[1]~~
 UUUU UUUU  0000 0010 - Read Prog Pointer | Write RAM Pointer
-UUUU UUUU  0000 0011 - Read RAM | Write Argument Reg | Increment Prog Pointer
+UUUU UUUU  0000 0011 - Read RAM | Write Argument Reg | Inc Prog Pointer
 
 ~~[LDAV]~~
 0000 0XXX  0000 0100 - Read Argument Reg | Write Register A
@@ -128,22 +131,64 @@ UUUU UUUU  0000 0011 - Read RAM | Write Argument Reg | Increment Prog Pointer
 1101 1XXX  0000 0111 - Read Argument Reg | Write RAM | Inc Stack Pointer
 1101 1XXX  0000 1000 - END OP
 
-~~[PSHA]~~
-1100 0XXX  0000 0100 - Read Stack Pointer | Write RAM Pointer
-1100 0XXX  0000 0101 - Read Register A | Write RAM | Inc Stack Pointer
-1100 0XXX  0000 0110 - END OP
-~~[PSHB]~~
-1100 1XXX  0000 0100 - Read Stack Pointer | Write RAM Pointer
-1100 1XXX  0000 0101 - Read Register B | Write RAM | Inc Stack Pointer
-1100 1XXX  0000 0110 - END OP
-~~[PSHC]~~
-1101 0XXX  0000 0100 - Read Stack Pointer | Write RAM Pointer
-1101 0XXX  0000 0101 - Read Register C | Write RAM | Inc Stack Pointer
-1101 0XXX  0000 0110 - END OP
-~~[PUSH]~~
-1101 1XXX  0000 0100 - Read Register C | Write RAM Pointer
-1101 1XXX  0000 0101 - Read RAM | Write Argument Reg 
-1101 1XXX  0000 0110 - Read Stack Pointer | Write RAM Pointer
-1101 1XXX  0000 0111 - Read Argument Reg | Write RAM | Inc Stack Pointer
-1101 1XXX  0000 1000 - END OP
+~~[POPA]~~
+1100 0XXX  0000 0100 - Dec Stack Pointer
+1100 0XXX  0000 0101 - Read Stack Pointer | Write RAM Pointer
+1100 0XXX  0000 0110 - Read RAM | Write Register A
+1100 0XXX  0000 0111 - END OP
+~~[POPB]~~
+1100 0XXX  0000 0100 - Dec Stack Pointer
+1100 0XXX  0000 0101 - Read Stack Pointer | Write RAM Pointer
+1100 0XXX  0000 0110 - Read RAM | Write Register B
+1100 0XXX  0000 0111 - END OP
+~~[POPC]~~
+1100 0XXX  0000 0100 - Dec Stack Pointer
+1100 0XXX  0000 0101 - Read Stack Pointer | Write RAM Pointer
+1100 0XXX  0000 0110 - Read RAM | Write Register C
+1100 0XXX  0000 0111 - END OP
+~~[POPM]~~
+1100 0XXX  0000 0100 - Dec Stack Pointer
+1100 0XXX  0000 0101 - Read Stack Pointer | Write RAM Pointer
+1100 0XXX  0000 0110 - Read RAM | Write Argument Reg
+1100 0XXX  0000 0111 - Read Register C | Write RAM Pointer
+1100 0XXX  0000 1000 - Read Argument Reg | Write RAM
+1100 0XXX  0000 1001 - END OP
 
+~~[M]~~
+ABCD E
+0000 0XXX - LDAV
+0000 0XXX - LDBV
+0000 0XXX - LDCV
+0000 0XXX - LDMV
+0000 0XXX - LDAA
+0000 0XXX - LDBA
+0000 0XXX - LDCA
+0000 0XXX - LDMA
+0000 0XXX - ADDV
+0000 0XXX - ADDM
+0000 0XXX - SUBV
+0000 0XXX - SUBM
+~~[0]~~
+ABCD E
+0110 0XXX - INCA
+0110 1XXX - INCB
+0111 0XXX - INCC
+1000 0XXX - DECA
+1000 1XXX - DECB
+1001 0XXX - DECC
+1010 0XXX - OUTN
+1010 1XXX - OUTC
+1011 0XXX - HALT
+1100 0XXX - PSHA
+1100 1XXX - PSHB
+1101 0XXX - PSHC
+1101 1XXX - PUSH
+1100 0XXX - POPA
+1100 1XXX - POPB
+1101 0XXX - POPC
+1101 1XXX - POPM
+~~[1]~~
+ABCD E
+0111 1XXX - JUMP
+1001 1XXX - JMPA
+1101 1XXX - JMPS
