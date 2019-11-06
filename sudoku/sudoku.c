@@ -3,9 +3,10 @@
 #include <time.h>
 
 // Importing string constants and a stack library
-#include "table3.txt"
-#include "messages2.txt"
+#include "tableLayouts/table.txt"
+#include "language/portugues_acento.txt"
 #include "files.txt"
+
 #include "myStack.c"
 
 // Loading Methods

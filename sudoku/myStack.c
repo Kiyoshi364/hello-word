@@ -1,5 +1,5 @@
-﻿#ifndef STACK
-#define STACK
+﻿#ifndef __STACK__
+#define __STACK__
 typedef struct _stack {
 	char *pos, *num, len, size;
 } stack;
@@ -35,5 +35,4 @@ void unStack(stack *s) {
 	free(s->num);
 	free(s);
 }
-#endif
-
+#endif // __STACK__

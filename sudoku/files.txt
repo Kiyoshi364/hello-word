@@ -1,6 +1,8 @@
-﻿#ifndef FILES
-#define FILES
-#define FEASY "easy.sdk"
-#define FNORMAL "normal.sdk"
-#define FHARD "hard.sdk"
-#endif
+﻿#ifndef __FILES__
+#define __FILES__
+
+#define FEASY "games/easy.sdk"
+#define FNORMAL "games/normal.sdk"
+#define FHARD "games/hard.sdk"
+
+#endif // __FILES__
