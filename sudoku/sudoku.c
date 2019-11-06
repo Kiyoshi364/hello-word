@@ -13,20 +13,20 @@
 void startSudoku(char difficulty);
 void loadSudoku(FILE *file);
 unsigned int randInt();
-int next(FILE *file, int times);
+char next(FILE *file, char times);
 void initFixed();
 
 // Sudoku Methods
 void run();
 void print();
-int isFixed(int pos);
-int* input();
+char isFixed(char pos);
+char* input();
 void update();
-int verifyPos(int *pack);
-int gameEnd();
+char verifyPos(char *pack);
+char gameEnd();
 
 // Global Variables
-int table[9][9],	// Stores the sudoku table
+char table[9][9],	// Stores the sudoku table
     *fixed,		// Stores the inicial positions (can't be alterated)
     fixed_len,		// Stores the length of the 'fixed' array
     hili;		// Stores some variables related to printing the table
@@ -86,15 +86,15 @@ void startSudoku(char difficulty) {
 	redo = newStack();
 }
 
-// Generates a random int between 0 and 4096
+// Generates a random unsigned int between 0 and 4096
 unsigned int randInt() {
 	time_t t;
-	srand((unsigned) time(&t));
+	srand((unsigned int) time(&t));
 	return (unsigned int) rand() % 0x1000;
 }
 
 // Skips to the next sudoku table 'times' times
-int next(FILE *file, int times) {
+char next(FILE *file, char times) {
 	unsigned char buffer = 0, twoStateCounter = 1;
 	while (times) {
 		if(twoStateCounter++&1) {
@@ -112,7 +112,7 @@ int next(FILE *file, int times) {
 				fseek(file, -1, SEEK_CUR);
 			}
 			times--;
-			int now = ftell(file);
+			long int now = ftell(file);
 			fseek(file, 0, SEEK_END);
 			if (now+1 == ftell(file)) {
 				fseek(file, 0, SEEK_SET);
@@ -167,15 +167,15 @@ void loadSudoku(FILE *file) {
 void print() {
 	system(CLS);
 	printf("\n\t\t  ");
-	for (int i = 1; i <=9; i++) {
+	for (register char i = 1; i <=9; i++) {
 		printf("  %d  ", i);
 		if (!(i%3))
 			printf("   ");
 	}
 	printf(UP_LINE);
-	for (int i = 0; i<9; i++) {
+	for (register char i = 0; i<9; i++) {
 		printf(RIGHT_COL, i+1);
-		for (int j = 0; j<9; j++) {
+		for (register char j = 0; j<9; j++) {
 			if (hili&16 && hili&15 && table[i][j] == (hili&15)) {// if highlight is toggled but fixed is untoggled
 				printf(" %c%c%c ", HFL_TOKEN, table[i][j]?table[i][j]+'0':EMPTY, HFR_TOKEN);
 			} else if (hili&15 && table[i][j] == (hili&15)) {// if highlight and fixed are toggled
@@ -199,19 +199,19 @@ void print() {
 // Saves all the positions that contains a number in array table
 // stores this info in array fixed
 void initFixed() {
-	for (int i = 0; i < 81; i++) {
+	for (register char i = 0; i < 81; i++) {
 		if (table[i/9][i%9]) fixed_len++;
 	}
-	int j = 0;
+	register char j = 0;
 	fixed = malloc(sizeof(*fixed)*fixed_len);
-	for (int i = 0; i < 81 && j < fixed_len; i++) {
+	for (register char i = 0; i < 81 && j < fixed_len; i++) {
 		if (table[i/9][i%9]) *(fixed + j++) = i;
 	}
 }
 
 // Checks if pos is inside the array fixed: returns 1 if true, 0 otherwise
-int isFixed(int pos) {
-    for (int i = 0; i < fixed_len; i++) {
+char isFixed(char pos) {
+    for (register char i = 0; i < fixed_len; i++) {
         if (fixed[i] == pos)
             return 1;
         if (fixed[i] > pos)
@@ -222,8 +222,8 @@ int isFixed(int pos) {
 
 // Asks input from the user; Returns a pointer with x and y positions
 // and the number in the following order {x, y, number}
-int* input() {
-	int *pack = malloc(sizeof(*pack)*3), i = 0;
+char* input() {
+	char *pack = malloc(sizeof(*pack)*3), i = 0;
 	printf(INPUT_MSG); // x, y, n
 	while (i < 3) {
 		int c = getchar();
@@ -257,7 +257,7 @@ int* input() {
 
 // Updates the table with x, y and number received
 void update() {
-    int *pack = input(), pos = -1;
+    char *pack = input(), pos = -1;
 	if (pack[0] == 10) { // Macros
 		if (pack[1] == 10 && pack[2] == 10) { // Undo
 			char *b = pop(undo);
@@ -283,7 +283,7 @@ void update() {
 		unStack(redo);
 		redo = newStack();
 	}
-	for (int i = 0; i < fixed_len; i++) {
+	for (register char i = 0; i < fixed_len; i++) {
 		if (fixed[i] == pos) {
 			printf(FIXED_POS_MSG);
 			int c = getchar();
@@ -308,9 +308,9 @@ void update() {
 }
 
 // Verify if position and number are able to be placed in the table
-int verifyPos(int *pack) {
-	int flag = 1;
-	for (int i = 0; i < 9; i++) {
+char verifyPos(char *pack) {
+	char flag = 1;
+	for (register char i = 0; i < 9; i++) {
 		if (table[pack[1]-1][i] == pack[2]) {
 			flag = 0;
 			printf(SAME_POS_MSG, i+1, pack[1]);
@@ -333,9 +333,9 @@ int verifyPos(int *pack) {
 }
 
 // Verify if all positions have a number different from 0 in it, return 1 if true, 0 otherwise
-int gameEnd() {
-    for (int i = 0; i < 9; i++) {
-        for (int j = 0; j < 9; j++) {
+char gameEnd() {
+    for (register char i = 0; i < 9; i++) {
+        for (register char j = 0; j < 9; j++) {
             if (!table[i][j]) return 0;
         }
     }
