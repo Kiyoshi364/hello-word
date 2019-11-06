@@ -17,41 +17,48 @@ int next(FILE *file, int times);
 void initFixed();
 
 // Sudoku Methods
-void run(char difficulty);
+void run();
 void print();
 int isFixed(int pos);
 int* input();
 void update();
-int verifyPos(int *a);
-int verifyTable(int diagonal);
+int verifyPos(int *pack);
 int gameEnd();
 
 // Global Variables
-int table[9][9], *fixed, fixed_len, hili;
-stack *undo, *redo;
+int table[9][9],	// Stores the sudoku table
+    *fixed,		// Stores the inicial positions (can't be alterated)
+    fixed_len,		// Stores the length of the 'fixed' array
+    hili;		// Stores some variables related to printing the table
+
+stack *undo,		// A stack that stores the moves to be undone
+      *redo;		// A stack that stores the moves to be redone
 
 int main() {
-	char dif;
-	printf(CHOOSE_DIF_MSG);
-	scanf("%hhd", &dif);
-	run(dif);
+	run();
 	return 0;
 }
 
-// Loads and runs the sudoku game
-void run(char difficulty) {
+// Asks for the difficulty (1, 2, 3), loads and runs the sudoku game
+void run() {
+	char difficulty;
+	printf(CHOOSE_DIF_MSG);
+	scanf("%hhd", &difficulty);
+
 	startSudoku(difficulty);
 	initFixed();
+
 	while (!gameEnd()) {
 		print();
 		update();
 	}
-	hili = 16;
+
+	hili = 16; // Sets the printing state
 	print();
 	printf(WIN_MSG);
 }
 
-// Loads sudoku game
+// Sets the variables needed to load a random sudoku game
 void startSudoku(char difficulty) {
 	FILE *file;
 	switch(difficulty) {
@@ -69,9 +76,11 @@ void startSudoku(char difficulty) {
 		printf(OPENFILEERROR_MSG);
 		exit(-1);
 	}
+
 	next(file, randInt());
 	loadSudoku(file);
 	fclose(file);
+
 	hili = STD_HILI;
 	undo = newStack();
 	redo = newStack();
@@ -84,11 +93,11 @@ unsigned int randInt() {
 	return (unsigned int) rand() % 0x1000;
 }
 
-// Skips to the next sudoku table
+// Skips to the next sudoku table 'times' times
 int next(FILE *file, int times) {
-	unsigned char buffer = 0, a = 1, i = 0;
+	unsigned char buffer = 0, twoStateCounter = 1;
 	while (times) {
-		if(a++%2) {
+		if(twoStateCounter++&1) {
 			fread(&buffer, sizeof(buffer), 1, file);
 			if (!buffer) {
 				fseek(file, 0, SEEK_SET);
@@ -99,7 +108,7 @@ int next(FILE *file, int times) {
 		}
 		unsigned char temp = buffer>>4;
 		if (!temp) {
-			if(!a%2) {
+			if(!(twoStateCounter&1)) {
 				fseek(file, -1, SEEK_CUR);
 			}
 			times--;
@@ -118,17 +127,21 @@ int next(FILE *file, int times) {
 // Loads sudoku table
 void loadSudoku(FILE *file) {
 	fseek(file, -1, SEEK_CUR);
-	unsigned char buffer = 0, temp = 1, a = 1, i = 0;
+	unsigned char buffer = 0, temp = 1, twoStateCounter = 1, i = 0;
+
+		// Preprocessing to make sure that
+		// the twoStateCounter and the buffer are OK
 		fread(&buffer, 1, 1, file);
 		if (!(buffer>>4)) {
-			a++;
-		} else if (!(buffer%0x10)) {
+			twoStateCounter++;
+		} else if (!(buffer&15)) { // 15 = 0x0F = 0000 1111
 			buffer = 0;
 		} else {
 			fseek(file, -1, SEEK_CUR);
 		}
+
 	while (temp) {
-		if(a++%2) {
+		if(twoStateCounter++&1) {
 			fread(&buffer, sizeof(buffer), 1, file);
 		} else {
 			buffer <<= 4;
@@ -152,7 +165,6 @@ void loadSudoku(FILE *file) {
 
 // Prints the sudoku table state
 void print() {
-	system(CLS);
 	system(CLS);
 	printf("\n\t\t  ");
 	for (int i = 1; i <=9; i++) {
@@ -211,106 +223,106 @@ int isFixed(int pos) {
 // Asks input from the user; Returns a pointer with x and y positions
 // and the number in the following order {x, y, number}
 int* input() {
-	int *a = malloc(sizeof(a)*3), i = 0;
+	int *pack = malloc(sizeof(*pack)*3), i = 0;
 	printf(INPUT_MSG); // x, y, n
 	while (i < 3) {
 		int c = getchar();
 		if (!i && c == 'u' && undo->size > 0) {
-			*(a) = 10;
-			*(a+1) = 10;
-			*(a+2) = 10;
+			pack[0] = 10;
+			pack[1] = 10;
+			pack[2] = 10;
 			i = 3;
 		} else if (!i && c == 'r' && redo->size > 0) {
-			*(a) = 10;
-			*(a+1) = 10;
-			*(a+2) = 9;
+			pack[0] = 10;
+			pack[1] = 10;
+			pack[2] = 9;
 			i = 3;
 		} else if (!i && c == 'f') {
-			*(a) = 10;
-			*(a+1) = 10;
-			*(a+2) = 8;
+			pack[0] = 10;
+			pack[1] = 10;
+			pack[2] = 8;
 			i = 3;
 		} else if (!i && c == 'h') {
-			*(a) = 10;
-			*(a+1) = 9;
+			pack[0] = 10;
+			pack[1] = 9;
 			i = 2;
 		} else if (c >= '0' && c <= '9') {
-			*(a + i++) = c - '0';
+			pack[i++] = c - '0';
 		}
 	}
 	int c = getchar();
 	while (c != '\n') c = getchar();
-	return a;
+	return pack;
 }
 
 // Updates the table with x, y and number received
 void update() {
-    int *a = input(), pos = -1;
-	if (*a == 10) { // Macros
-		if (*(a+1) == 10 && *(a+2) == 10) { // Undo
+    int *pack = input(), pos = -1;
+	if (pack[0] == 10) { // Macros
+		if (pack[1] == 10 && pack[2] == 10) { // Undo
 			char *b = pop(undo);
-			*a = *b%9+1;
-			*(a+1) = *b/9+1;
-			*(a+2) = *(b+1);
-			push(redo, *b, table[*(a+1)-1][*a-1]);
-		} else if (*(a+1) == 10 && *(a+2) == 9) { // Redo
+			pack[0] = *b%9+1;
+			pack[1] = *b/9+1;
+			pack[2] = *(b+1);
+			push(redo, *b, table[pack[1]-1][pack[0]-1]);
+		} else if (pack[1] == 10 && pack[2] == 9) { // Redo
 			char *b = pop(redo);
-			*a = *b%9+1;
-			*(a+1) = *b/9+1;
-			*(a+2) = *(b+1);
-			pos = (*a)-1/*x-1*/ + (*(a+1)-1)/*y-1*/*9;
-		} else if (*(a+1) == 10 && *(a+2) == 8) { // Toggle Fixed
-			hili += (hili>>4)?-16:16; // 1<<4 = 16
-			*(a+2) = 10;
-		} else if (*(a+1) == 9) { // Highlight
-			hili += *(a+2) - (hili&15);
-			*(a+2) = 10;
+			pack[0] = *b%9+1;
+			pack[1] = *b/9+1;
+			pack[2] = *(b+1);
+			pos = (pack[0])-1/*x-1*/ + (pack[1]-1)/*y-1*/*9;
+		} else if (pack[1] == 10 && pack[2] == 8) { // Toggle Fixed On/Off
+			hili ^= 16; // 16 = 0x10 = 0000 1000
+			pack[2] = 10;
+		} else if (pack[1] == 9) { // Highlight
+			hili += pack[2] - (hili&15);
+			pack[2] = 10;
 		}
 	} else {
-		pos = (*a)-1 + (*(a+1)-1)*9; // pos = (x-1)+(y-1)*9;
+		pos = pack[0]-1 + (pack[1]-1)*9; // pos = (x-1)+(y-1)*9;
 		unStack(redo);
 		redo = newStack();
 	}
 	for (int i = 0; i < fixed_len; i++) {
-		if (*(fixed+i) == pos) {
+		if (fixed[i] == pos) {
 			printf(FIXED_POS_MSG);
 			int c = getchar();
 			while (c != '\n') c = getchar();
 			return;
 		}
-		if (*(fixed+i) > pos) {
+		if (fixed[i] > pos) {
 			break;
 		}
 	}
-	if (*(a+2) == 10); 
+	if (pack[2] == 10); 
 	else {
-		if (pos+1) {
-			push(undo, pos, table[*(a+1)-1][*a-1]);
+		if (pos+1) { // if pos != -1
+			push(undo, pos, table[pack[1]-1][pack[0]-1]);
 		}
-		if (*(a+2) == 0)
-			table[*(a+1)-1][*a-1] = *(a+2);
-		else if (verifyPos(a))
-			table[*(a+1)-1][*a-1] = *(a+2);
+		if (pack[2] == 0)
+			table[pack[1]-1][pack[0]-1] = pack[2];
+		else if (verifyPos(pack))
+			table[pack[1]-1][pack[0]-1] = pack[2];
 	}
-	free(a);
+	free(pack);
 }
 
 // Verify if position and number are able to be placed in the table
-int verifyPos(int *a) {
+int verifyPos(int *pack) {
 	int flag = 1;
 	for (int i = 0; i < 9; i++) {
-		if (table[*(a+1)-1][i] == *(a+2)) {
+		if (table[pack[1]-1][i] == pack[2]) {
 			flag = 0;
-			printf(SAME_POS_MSG, i+1, *(a+1));
+			printf(SAME_POS_MSG, i+1, pack[1]);
 		}
-		if (table[i][*a-1] == *(a+2)) {
+		if (table[i][pack[0]-1] == pack[2]) {
 			flag = 0;
-			printf(SAME_POS_MSG, *a, i+1);
+			printf(SAME_POS_MSG, pack[0], i+1);
 		}
-		if (table[(*(a+1)-1)/3*3+i/3][(*a-1)/3*3+(i%3)] == *(a+2)) {
+		if (table [(pack[1]-1) /3*3 + i/3] [pack[1] /3*3 + (i%3)] == pack[2]) {
 			flag = 0;
-			printf(SAME_POS_MSG, (*a-1)/3*3+(i%3) +1, (*(a+1)-1)/3*3+i/3 +1);
-			}
+			printf(SAME_POS_MSG, pack[1]/3*3+(i%3) +1, (pack[1]-1)/3*3+i/3 +1);
+		}
 	}
 
 	if (!flag) {
