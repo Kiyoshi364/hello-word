@@ -2,7 +2,7 @@
 #define __FILES__
 
 #define FEASY "games/easy.sdk"
-#define FNORMAL "games/normal.sdk"
+#define FNORMAL "games/medium.sdk"
 #define FHARD "games/hard.sdk"
 
 #endif // __FILES__

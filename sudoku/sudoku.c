@@ -108,9 +108,6 @@ char next(FILE *file, char times) {
 		}
 		unsigned char temp = buffer>>4;
 		if (!temp) {
-			if(!(twoStateCounter&1)) {
-				fseek(file, -1, SEEK_CUR);
-			}
 			times--;
 			long int now = ftell(file);
 			fseek(file, 0, SEEK_END);
@@ -134,7 +131,7 @@ void loadSudoku(FILE *file) {
 		fread(&buffer, 1, 1, file);
 		if (!(buffer>>4)) {
 			twoStateCounter++;
-		} else if (!(buffer&15)) { // 15 = 0x0F = 0000 1111
+		} else if (!(buffer%0x10)) { // 15 = 0x0F = 0000 1111
 			buffer = 0;
 		} else {
 			fseek(file, -1, SEEK_CUR);
