@@ -1,3 +1,3 @@
-A sudoku college project, it's a bit messy now.
+A sudoku college project.
 
 Undo and Redo may cause unexpected changes.
