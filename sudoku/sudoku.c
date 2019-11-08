@@ -254,23 +254,24 @@ char* input() {
 			pack[1] = 9;
 			i = 2;
 		} else if (c >= '0' && c <= '9') {
-			if (hili&0x80) { // 128 = 0x80 = 1000 0000
-				char *out = convertFromNumPad(c - '0');
+			pack[i++] = c - '0';
+			if (hili&0x80 && !(i-2)) { // 128 = 0x80 = 1000 0000
+				char *out1 = convertFromNumPad(pack[0]);
+				char *out2 = convertFromNumPad(pack[1]);
 				switch ((hili&0x30)>>4) { // 48 = 0x30 = 0011 0000
 					case 0: 
 						pack[i] = c - '0'; break;
 					case 1:
-						pack[0] += out[0]*(i?(i-1?0:1):3);
-						pack[1] += out[1]*(i?(i-1?0:1):3);
-						pack[3] = i-3?0:c - '0';
+						pack[0] = out1[0]*3 + out2[0];
+						pack[1] = out1[1]*3 + out2[1];
 						break;
 					case 2: break;
 					case 3: break;
 					default: break;
 				}
 				i++;
-				free(out);
-			} else pack[i++] = c - '0';
+				free(out1); free(out2);
+			}
 		}
 	}
 	int c = getchar();
@@ -368,21 +369,21 @@ char gameEnd() {
 /*	NEW FEATURES	*/
 
 /* Remaps {
- * 	1 -> (0, 0)
- * 	2 -> (0, 1)
- * 	3 -> (0, 2)
- * 	4 -> (1, 0)
+ * 	1 -> (0, 2)
+ * 	2 -> (1, 2)
+ * 	3 -> (2, 2)
+ * 	4 -> (0, 1)
  * 	5 -> (1, 1)
- * 	6 -> (1, 2)
- * 	7 -> (2, 0)
- * 	8 -> (2, 1)
- *	9 -> (2, 2)
+ * 	6 -> (2, 1)
+ * 	7 -> (0, 0)
+ * 	8 -> (1, 0)
+ *	9 -> (2, 0)
  * }
  */
 char* convertFromNumPad(char in) {
 	char *out = malloc(sizeof(*out)*2);
 	in -= 1;
-	out[0] = 3 - in%3;
+	out[0] = in%3;
 	out[1] = 2 - in/3;
 	return out;
 }
