@@ -27,16 +27,17 @@ char gameEnd();
 
 // New Features
 char* convertFromNumPad(char in);
+char macros(char *pack);
+char packToPos(char *pack);
 
 // Global Variables
 char table[9][9],	// Stores the sudoku table
     *fixed,		// Stores the inicial positions (can't be alterated)
     fixed_len,		// Stores the length of the 'fixed' array
     hili;		/* Stores some variables related to printing the table
-			 * OUII FHHH	- O: OldSchool off
-			 * 		- U: Unused
+			 * OIIF HHHH	- O: OldSchool off
 			 * 		- I: Input mode {0: normal, 1: numpad, 2: numpad inverted, 3: inverted numpad}
-			 * 		- F: Fixed on
+			 * 		- F: Fixed off
 			 * 		- H: Hiligthed number (0 or >9 is off)
 			 */
 
@@ -172,6 +173,7 @@ void loadSudoku(FILE *file) {
 // Prints the sudoku table state
 void print() {
 	system(CLS);
+	if (hili&0x80) printf("f: %hhd h: %hhd m: %hhd [0x%X]\n", hili&16?0:1, hili&15, (hili&0x60)>>5, hili&0xFF);
 	printf("\n\t\t  ");
 	for (register char i = 1; i <=9; i++) {
 		printf("  %d  ", i);
@@ -182,13 +184,13 @@ void print() {
 	for (register char i = 0; i<9; i++) {
 		printf(RIGHT_COL, i+1);
 		for (register char j = 0; j<9; j++) {
-			if (hili&16 && hili&15 && table[i][j] == (hili&15)) {// if highlight is toggled but fixed is untoggled
+			if (hili&16 && hili&15 && table[i][j] == (hili&15)) {// if highlight on fixed untoggled
 				printf(" %c%c%c ", HFL_TOKEN, table[i][j]?table[i][j]+'0':EMPTY, HFR_TOKEN);
-			} else if (hili&15 && table[i][j] == (hili&15)) {// if highlight and fixed are toggled
+			} else if (hili&15 && table[i][j] == (hili&15)) {// if highlight on and fixed toggled
 				printf(" %c%c%c ", isFixed(j+9*i)?HFL_TOKEN:HUL_TOKEN, table[i][j]?table[i][j]+'0':EMPTY, isFixed(j+9*i)?HFR_TOKEN:HUR_TOKEN);
-			} else if (hili>>4) {// if fixed is untoggled
+			} else if (hili&16) {// if highlight off and fixed untoggled
 				printf(" %c%c%c ", UUL_TOKEN, table[i][j]?table[i][j]+'0':EMPTY, UUR_TOKEN);
-			} else {
+			} else { // if highlight off and fixed toggled
 				printf(" %c%c%c ", isFixed(j+9*i)?UFL_TOKEN:UUL_TOKEN, table[i][j]?table[i][j]+'0':EMPTY, isFixed(j+9*i)?UFR_TOKEN:UUR_TOKEN);
 			}
 			if (!((j+1)%3))
@@ -249,29 +251,36 @@ char* input() {
 			pack[1] = 10;
 			pack[2] = 8;
 			i = 3;
+		} else if (!i && c == 'o') {
+			pack[0] = 10;
+			pack[1] = 10;
+			pack[2] = 7;
+			i = 3;
+		} else if (!i && c == '?') {
+			pack[0] = 10;
+			pack[1] = 10;
+			pack[2] = 6;
+			i = 3;
+		} else if (!i && c == 'q') {
+			pack[0] = 10;
+			pack[1] = 10;
+			pack[2] = 5;
+			i = 3;
+		} else if (!i && c == 's') {
+			pack[0] = 10;
+			pack[1] = 10;
+			pack[2] = 4;
+			i = 3;
 		} else if (!i && c == 'h') {
 			pack[0] = 10;
 			pack[1] = 9;
 			i = 2;
+		} else if (!i && c == 'm') {
+			pack[0] = 10;
+			pack[1] = 7;
+			i = 2;
 		} else if (c >= '0' && c <= '9') {
 			pack[i++] = c - '0';
-			if (hili&0x80 && !(i-2)) { // 128 = 0x80 = 1000 0000
-				char *out1 = convertFromNumPad(pack[0]);
-				char *out2 = convertFromNumPad(pack[1]);
-				switch ((hili&0x30)>>4) { // 48 = 0x30 = 0011 0000
-					case 0: 
-						pack[i] = c - '0'; break;
-					case 1:
-						pack[0] = out1[0]*3 + out2[0];
-						pack[1] = out1[1]*3 + out2[1];
-						break;
-					case 2: break;
-					case 3: break;
-					default: break;
-				}
-				i++;
-				free(out1); free(out2);
-			}
 		}
 	}
 	int c = getchar();
@@ -283,29 +292,10 @@ char* input() {
 void update() {
     char *pack = input(), pos = -1;
 	if (pack[0] == 10) { // Macros
-		if (pack[1] == 10 && pack[2] == 10) { // Undo
-			char *b = pop(undo);
-			pack[0] = *b%9+1;
-			pack[1] = *b/9+1;
-			pack[2] = *(b+1);
-			push(redo, *b, table[pack[1]-1][pack[0]-1]);
-		} else if (pack[1] == 10 && pack[2] == 9) { // Redo
-			char *b = pop(redo);
-			pack[0] = *b%9+1;
-			pack[1] = *b/9+1;
-			pack[2] = *(b+1);
-			pos = (pack[0])-1/*x-1*/ + (pack[1]-1)/*y-1*/*9;
-		} else if (pack[1] == 10 && pack[2] == 8) { // Toggle Fixed On/Off
-			hili ^= 16; // 16 = 0x10 = 0000 1000
-			pack[2] = 10;
-		} else if (pack[1] == 9) { // Highlight
-			hili += pack[2] - (hili&15);
-			pack[2] = 10;
-		}
-	} else {
-		pos = pack[0]-1 + (pack[1]-1)*9; // pos = (x-1)+(y-1)*9;
-		unStack(redo);
-		redo = newStack();
+		pos = macros(pack);
+	} else { // Convert to pos
+		pos = packToPos(pack);
+		redo->size = 0;
 	}
 	for (register char i = 0; i < fixed_len; i++) {
 		if (fixed[i] == pos) {
@@ -386,4 +376,63 @@ char* convertFromNumPad(char in) {
 	out[0] = in%3;
 	out[1] = 2 - in/3;
 	return out;
+}
+
+char macros(char *pack) {
+	char pos = -1;
+	if (pack[1] == 10 && pack[2] == 10) { // Undo
+		char *b = pop(undo);
+		pack[0] = *b%9+1;
+		pack[1] = *b/9+1;
+		pack[2] = *(b+1);
+		push(redo, *b, table[pack[1]-1][pack[0]-1]);
+	} else if (pack[1] == 10 && pack[2] == 9) { // Redo
+		char *b = pop(redo);
+		pack[0] = *b%9+1;
+		pack[1] = *b/9+1;
+		pack[2] = *(b+1);
+		pos = (pack[0])-1/*x-1*/ + (pack[1]-1)/*y-1*/*9;
+	} else if (pack[1] == 10 && pack[2] == 8) { // Toggle Fixed On/Off
+		hili ^= 16; // 16 = 0x10 = 0000 1000
+		pack[2] = 10;
+	} else if (pack[1] == 10 && pack[2] == 7) { // Toggle OldSchool mode On/Off
+		hili ^= 0x80;
+		pack[2] = 10;
+	} else if (hili&0x80 && pack[1] == 10 && pack[2] == 6) { // Display Help window
+		// ToDO
+		pack[2] = 10;
+	} else if (hili&0x80 && pack[1] == 10 && pack[2] == 5) { // Quit game
+		// ToDO
+		pack[2] = 10;
+	} else if (hili&0x80 && pack[1] == 10 && pack[2] == 4) { // Save game
+		// ToDO
+		pack[2] = 10;
+	} else if (pack[1] == 9) { // Change Highlight
+		hili += pack[2] - (hili&15);
+		pack[2] = 10;
+	} else if (hili&0x80 && pack[1] == 7) { // Change Mode
+		hili = hili&(~0x60) | (pack[2]&3)<<5; // 0x60 = 0110 0000 | 3 = 0x03 = 0000 0011
+		pack[2] = 10;
+	}
+	return pos;
+}
+
+char packToPos(char *pack) {
+	if (hili&0x80) { // 128 = 0x80 = 1000 0000
+		char *out1 = convertFromNumPad(pack[0]);
+		char *out2 = convertFromNumPad(pack[1]);
+		switch ((hili&0x60)>>4) { // 96 = 0x60 = 0110 0000
+			case 1:
+			case 2:
+			case 3:
+				pack[0] = out1[0]*3 + out2[0] + 1;
+				pack[1] = out1[1]*3 + out2[1] + 1;
+				break;
+			default:
+				break;
+		}
+		free(out1);
+		free(out2);
+	}
+	return pack[0]-1 + (pack[1]-1)*9; // pos = (x-1)+(y-1)*9;
 }
