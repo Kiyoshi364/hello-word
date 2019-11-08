@@ -25,11 +25,20 @@ void update();
 char verifyPos(char *pack);
 char gameEnd();
 
+// New Features
+char* convertFromNumPad(char in);
+
 // Global Variables
 char table[9][9],	// Stores the sudoku table
     *fixed,		// Stores the inicial positions (can't be alterated)
     fixed_len,		// Stores the length of the 'fixed' array
-    hili;		// Stores some variables related to printing the table
+    hili;		/* Stores some variables related to printing the table
+			 * OUII FHHH	- O: OldSchool off
+			 * 		- U: Unused
+			 * 		- I: Input mode {0: normal, 1: numpad, 2: numpad inverted, 3: inverted numpad}
+			 * 		- F: Fixed on
+			 * 		- H: Hiligthed number (0 or >9 is off)
+			 */
 
 stack *undo,		// A stack that stores the moves to be undone
       *redo;		// A stack that stores the moves to be redone
@@ -221,6 +230,7 @@ char isFixed(char pos) {
 // and the number in the following order {x, y, number}
 char* input() {
 	char *pack = malloc(sizeof(*pack)*3), i = 0;
+	if (hili&0x80) for (register char j = 0; j < 3; j++) pack[j] = 0;
 	printf(INPUT_MSG); // x, y, n
 	while (i < 3) {
 		int c = getchar();
@@ -244,7 +254,23 @@ char* input() {
 			pack[1] = 9;
 			i = 2;
 		} else if (c >= '0' && c <= '9') {
-			pack[i++] = c - '0';
+			if (hili&0x80) { // 128 = 0x80 = 1000 0000
+				char *out = convertFromNumPad(c - '0');
+				switch ((hili&0x30)>>4) { // 48 = 0x30 = 0011 0000
+					case 0: 
+						pack[i] = c - '0'; break;
+					case 1:
+						pack[0] += out[0]*(i?(i-1?0:1):3);
+						pack[1] += out[1]*(i?(i-1?0:1):3);
+						pack[3] = i-3?0:c - '0';
+						break;
+					case 2: break;
+					case 3: break;
+					default: break;
+				}
+				i++;
+				free(out);
+			} else pack[i++] = c - '0';
 		}
 	}
 	int c = getchar();
@@ -337,4 +363,26 @@ char gameEnd() {
         }
     }
     return 1;
+}
+
+/*	NEW FEATURES	*/
+
+/* Remaps {
+ * 	1 -> (0, 0)
+ * 	2 -> (0, 1)
+ * 	3 -> (0, 2)
+ * 	4 -> (1, 0)
+ * 	5 -> (1, 1)
+ * 	6 -> (1, 2)
+ * 	7 -> (2, 0)
+ * 	8 -> (2, 1)
+ *	9 -> (2, 2)
+ * }
+ */
+char* convertFromNumPad(char in) {
+	char *out = malloc(sizeof(*out)*2);
+	in -= 1;
+	out[0] = 3 - in%3;
+	out[1] = 2 - in/3;
+	return out;
 }
