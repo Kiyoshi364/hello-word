@@ -36,7 +36,7 @@ char table[9][9],	// Stores the sudoku table
     fixed_len,		// Stores the length of the 'fixed' array
     hili;		/* Stores some variables related to printing the table
 			 * OIIF HHHH	- O: OldSchool off
-			 * 		- I: Input mode {0: normal, 1: numpad, 2: numpad inverted, 3: inverted numpad}
+			 * 		- I: Input mode {0: normal, 1: numpad, 2: inverted numpad, 3: numpad inverted}
 			 * 		- F: Fixed off
 			 * 		- H: Hiligthed number (0 or >9 is off)
 			 */
@@ -325,17 +325,17 @@ void update() {
 char verifyPos(char *pack) {
 	char flag = 1;
 	for (register char i = 0; i < 9; i++) {
-		if (table[pack[1]-1][i] == pack[2]) {
+		if (table[pack[1]-1][i] == pack[2]) { // Verify for <-X->
 			flag = 0;
-			printf(SAME_POS_MSG, i+1, pack[1]);
+			printf("X: "SAME_POS_MSG, i+1, pack[1]);
 		}
-		if (table[i][pack[0]-1] == pack[2]) {
+		if (table[i][pack[0]-1] == pack[2]) { // Verify for ^ Y v
 			flag = 0;
-			printf(SAME_POS_MSG, pack[0], i+1);
+			printf("Y: "SAME_POS_MSG, pack[0], i+1);
 		}
-		if (table [(pack[1]-1) /3*3 + i/3] [pack[1] /3*3 + (i%3)] == pack[2]) {
+		if (table [(pack[1]-1) /3*3 + i/3] [pack[1] /3*3 + (i%3)] == pack[2]) { // Verify for [S]
 			flag = 0;
-			printf(SAME_POS_MSG, pack[1]/3*3+(i%3) +1, (pack[1]-1)/3*3+i/3 +1);
+			printf("S: "SAME_POS_MSG, pack[1]/3*3+(i%3) +1, (pack[1]-1)/3*3+i/3 +1);
 		}
 	}
 
@@ -421,18 +421,28 @@ char packToPos(char *pack) {
 	if (hili&0x80) { // 128 = 0x80 = 1000 0000
 		char *out1 = convertFromNumPad(pack[0]);
 		char *out2 = convertFromNumPad(pack[1]);
-		switch ((hili&0x60)>>4) { // 96 = 0x60 = 0110 0000
-			case 1:
-			case 2:
-			case 3:
+		char *out3 = convertFromNumPad(pack[2]);
+		switch ((hili&0x60)>>5) { // 96 = 0x60 = 0110 0000
+			case 1: // Normal Numpad
 				pack[0] = out1[0]*3 + out2[0] + 1;
 				pack[1] = out1[1]*3 + out2[1] + 1;
+				break;
+			case 2: // Inverted Numpad
+				pack[0] = out1[0]*3 + out2[0] + 1;
+				pack[1] = (2-out1[1])*3 + (2-out2[1]) + 1;
+				break;
+			case 3: // True Numpad
+				pack[0] = out1[0]*3 + out2[0] + 1;
+				pack[1] = out1[1]*3 + out2[1] + 1;
+				pack[2] = out3[0] + out3[1]*3 + 1;
 				break;
 			default:
 				break;
 		}
 		free(out1);
 		free(out2);
+		free(out3);
 	}
+	printf("%hhd %hhd %hhd\n", pack[0], pack[1], pack[2]);
 	return pack[0]-1 + (pack[1]-1)*9; // pos = (x-1)+(y-1)*9;
 }
