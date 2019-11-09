@@ -29,6 +29,9 @@ char gameEnd();
 char* convertFromNumPad(char in);
 char macros(char *pack);
 char packToPos(char *pack);
+void help();
+void quit();
+void save();
 
 // Global Variables
 char table[9][9],	// Stores the sudoku table
@@ -399,13 +402,13 @@ char macros(char *pack) {
 		hili ^= 0x80;
 		pack[2] = 10;
 	} else if (hili&0x80 && pack[1] == 10 && pack[2] == 6) { // Display Help window
-		// ToDO
+		help(); // ToDo
 		pack[2] = 10;
 	} else if (hili&0x80 && pack[1] == 10 && pack[2] == 5) { // Quit game
-		// ToDO
+		quit(); // ToDO
 		pack[2] = 10;
 	} else if (hili&0x80 && pack[1] == 10 && pack[2] == 4) { // Save game
-		// ToDO
+		save(); // ToDO
 		pack[2] = 10;
 	} else if (pack[1] == 9) { // Change Highlight
 		if (hili&0x80 && hili&0x40 && hili&0x20) { // Old school and mode 3
@@ -450,4 +453,22 @@ char packToPos(char *pack) {
 	}
 	//printf("%hhd %hhd %hhd\n", pack[0], pack[1], pack[2]);
 	return pack[0]-1 + (pack[1]-1)*9; // pos = (x-1)+(y-1)*9;
+}
+
+void help() {
+	printf("Help:\n");
+
+	while(getchar() != '\n');
+}
+
+void quit() {
+	printf("Quit:\n");
+
+	while(getchar() != '\n');
+}
+
+void save() {
+	printf("Save:\n");
+
+	while(getchar() != '\n');
 }
