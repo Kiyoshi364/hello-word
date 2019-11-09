@@ -310,13 +310,13 @@ void update() {
 	}
 	if (pack[2] == 10); 
 	else {
-		if (pos+1) { // if pos != -1
+		if (pack[2] == 0) {
 			push(undo, pos, table[pack[1]-1][pack[0]-1]);
+			table[pack[1]-1][pack[0]-1] = pack[2];
+		} else if (verifyPos(pack)) {
+			push(undo, pos, table[pack[1]-1][pack[0]-1]);
+			table[pack[1]-1][pack[0]-1] = pack[2];
 		}
-		if (pack[2] == 0)
-			table[pack[1]-1][pack[0]-1] = pack[2];
-		else if (verifyPos(pack))
-			table[pack[1]-1][pack[0]-1] = pack[2];
 	}
 	free(pack);
 }
@@ -333,9 +333,9 @@ char verifyPos(char *pack) {
 			flag = 0;
 			printf("Y: "SAME_POS_MSG, pack[0], i+1);
 		}
-		if (table [(pack[1]-1) /3*3 + i/3] [pack[1] /3*3 + (i%3)] == pack[2]) { // Verify for [S]
+		if (table [(pack[1]-1) /3*3 + i/3] [(pack[0]-1) /3*3 + (i%3)] == pack[2]) { // Verify for [S]
 			flag = 0;
-			printf("S: "SAME_POS_MSG, pack[1]/3*3+(i%3) +1, (pack[1]-1)/3*3+i/3 +1);
+			printf("S: "SAME_POS_MSG, (pack[0]-1)/3*3+(i%3) +1, (pack[1]-1)/3*3+i/3 +1);
 		}
 	}
 
@@ -408,6 +408,11 @@ char macros(char *pack) {
 		// ToDO
 		pack[2] = 10;
 	} else if (pack[1] == 9) { // Change Highlight
+		if (hili&0x80 && hili&0x40 && hili&0x20) { // Old school and mode 3
+			char *out3 = convertFromNumPad(pack[2]);
+			pack[2] = pack[2]?out3[0] + out3[1]*3 + 1:0;
+			free(out3);
+		}
 		hili += pack[2] - (hili&15);
 		pack[2] = 10;
 	} else if (hili&0x80 && pack[1] == 7) { // Change Mode
@@ -434,7 +439,7 @@ char packToPos(char *pack) {
 			case 3: // True Numpad
 				pack[0] = out1[0]*3 + out2[0] + 1;
 				pack[1] = out1[1]*3 + out2[1] + 1;
-				pack[2] = out3[0] + out3[1]*3 + 1;
+				pack[2] = pack[2]?out3[0] + out3[1]*3 + 1:0;
 				break;
 			default:
 				break;
@@ -443,6 +448,6 @@ char packToPos(char *pack) {
 		free(out2);
 		free(out3);
 	}
-	printf("%hhd %hhd %hhd\n", pack[0], pack[1], pack[2]);
+	//printf("%hhd %hhd %hhd\n", pack[0], pack[1], pack[2]);
 	return pack[0]-1 + (pack[1]-1)*9; // pos = (x-1)+(y-1)*9;
 }
