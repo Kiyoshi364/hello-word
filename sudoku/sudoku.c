@@ -457,18 +457,21 @@ char packToPos(char *pack) {
 
 void help() {
 	printf("Help:\n");
+	printf("Not implemented!\n");
 
 	while(getchar() != '\n');
 }
 
 void quit() {
 	printf("Quit:\n");
+	printf("Not implemented!\n");
 
 	while(getchar() != '\n');
 }
 
 void save() {
 	printf("Save:\n");
+	printf("Not implemented!\n");
 
 	while(getchar() != '\n');
 }
