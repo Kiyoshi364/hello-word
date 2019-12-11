@@ -39,7 +39,7 @@ char table[9][9],	// Stores the sudoku table
     fixed_len,		// Stores the length of the 'fixed' array
     hili;		/* Stores some variables related to printing the table
 			 * OIIF HHHH	- O: OldSchool off
-			 * 		- I: Input mode {0: normal, 1: numpad, 2: inverted numpad, 3: numpad inverted}
+			 * 		- I: Input mode {0: normal, 1: numpad, 2: inverted numpad, 3: true numpad}
 			 * 		- F: Fixed off
 			 * 		- H: Hiligthed number (0 or >9 is off)
 			 */
@@ -259,17 +259,17 @@ char* input() {
 			pack[1] = 10;
 			pack[2] = 7;
 			i = 3;
-		} else if (!i && c == '?') {
+		} else if (hili&0x80 && !i && c == '?') {
 			pack[0] = 10;
 			pack[1] = 10;
 			pack[2] = 6;
 			i = 3;
-		} else if (!i && c == 'q') {
+		} else if (hili&0x80 && !i && c == 'q') {
 			pack[0] = 10;
 			pack[1] = 10;
 			pack[2] = 5;
 			i = 3;
-		} else if (!i && c == 's') {
+		} else if (hili&0x80 && !i && c == 's') {
 			pack[0] = 10;
 			pack[1] = 10;
 			pack[2] = 4;
@@ -278,7 +278,7 @@ char* input() {
 			pack[0] = 10;
 			pack[1] = 9;
 			i = 2;
-		} else if (!i && c == 'm') {
+		} else if (hili&0x80 && !i && c == 'm') {
 			pack[0] = 10;
 			pack[1] = 7;
 			i = 2;
@@ -425,6 +425,67 @@ char macros(char *pack) {
 	return pos;
 }
 
+/* Modes Description
+ * - Mode 0 / Normal:
+ *   	Use cartesian coordinates, first X, second Y, then number.
+ *
+ * - Mode 1 / Numpad:
+ *   	Use numbers to select the Big Square:	7 7 7	8 8 8	9 9 9
+ * 				  		7 7 7	8 8 8	9 9 9
+ *   						7 7 7	8 8 8	9 9 9
+ *
+ * 						4 4 4	5 5 5	6 6 6
+ * 						4 4 4	5 5 5	6 6 6
+ * 						4 4 4	5 5 5	6 6 6
+ *
+ * 						1 1 1	2 2 2	3 3 3
+ * 						1 1 1	2 2 2	3 3 3
+ * 						1 1 1	2 2 2	3 3 3
+ *
+ * 	Then select the Small Square:	7 8 9
+ * 					4 5 6
+ * 					1 2 3
+ * 	Choose the Number as usual.
+ *
+ * - Mode 2 / Inverted Numpad:
+ *   	Use numbers to select the Big Square:	1 1 1	2 2 2	3 3 3
+ * 				  		1 1 1	2 2 2	3 3 3
+ *   						1 1 1	2 2 2	3 3 3
+ *
+ * 						4 4 4	5 5 5	6 6 6
+ * 						4 4 4	5 5 5	6 6 6
+ * 						4 4 4	5 5 5	6 6 6
+ *
+ * 						7 7 7	8 8 8	9 9 9
+ * 						7 7 7	8 8 8	9 9 9
+ * 						7 7 7	8 8 8	9 9 9
+ *
+ * 	Then select the Small Square:	1 2 3
+ * 					4 5 6
+ * 					7 8 9
+ * 	Choose the Number as usual.
+ *
+ * - Mode 3 / True Numpad:
+ *   	Use numbers to select the Big Square:	7 7 7	8 8 8	9 9 9
+ * 				  		7 7 7	8 8 8	9 9 9
+ *   						7 7 7	8 8 8	9 9 9
+ *
+ * 						4 4 4	5 5 5	6 6 6
+ * 						4 4 4	5 5 5	6 6 6
+ * 						4 4 4	5 5 5	6 6 6
+ *
+ * 						1 1 1	2 2 2	3 3 3
+ * 						1 1 1	2 2 2	3 3 3
+ * 						1 1 1	2 2 2	3 3 3
+ *
+ * 	Then select the Small Square:	7 8 9
+ * 					4 5 6
+ * 					1 2 3
+ *
+ * 	The Numbers in the numpad are displayed in this way:	1 2 3
+ * 								4 5 6
+ * 								7 8 9
+ */
 char packToPos(char *pack) {
 	if (hili&0x80) { // 128 = 0x80 = 1000 0000
 		char *out1 = convertFromNumPad(pack[0]);
